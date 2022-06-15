@@ -9,13 +9,12 @@ fn hit_sphere(center: Vec3, radius: f64, r: ray::Ray) -> bool {
     let a = Vec3::dot(r.dir, r.dir);
     let b = 2. * Vec3::dot(oc, r.dir);
     let c = Vec3::dot(oc, oc) - (radius * radius);
-    let discriminant = (b * b) - (4. * a * c);
-    println!("{} {}, {}", discriminant, b * b, 4. * a * c);
+    let discriminant = b * b - 4. * a * c;
     discriminant > 0.
 }
 
 fn ray_color(ray: ray::Ray) -> Vec3 {
-    if hit_sphere(Vec3::new(0., 0., -1.), 0., ray.clone()) {
+    if hit_sphere(Vec3::new(0., 0., -1.), 0.5, ray.clone()) {
         return Vec3::new(1., 0., 0.);
     }
     let unit_direction = Vec3::normalize(ray.dir);
@@ -27,7 +26,7 @@ fn main() {
     // Image
 
     let aspect_ratio: f64 = 16. / 9.;
-    let width: i32 = 4;
+    let width: i32 = 400;
     let height: i32 = (width as f64 / aspect_ratio) as i32;
 
     // Camera
@@ -51,8 +50,6 @@ fn main() {
 
     d.clear_background(Color::BLACK);
 
-    println!("{:?}", lower_left_corner);
-
     for j in 0..height {
         for i in 0..width {
             let u = i as f64 / (width - 1) as f64;
@@ -64,11 +61,11 @@ fn main() {
             let col = ray_color(r);
             d.draw_pixel(
                 i,
-                j,
+                height - j - 1,
                 Color::new(
-                    (col.x * 255.999) as u8,
-                    (col.y * 255.999) as u8,
-                    (col.z * 255.999) as u8,
+                    (col.x * 255.) as u8,
+                    (col.y * 255.) as u8,
+                    (col.z * 255.) as u8,
                     255,
                 ),
             )

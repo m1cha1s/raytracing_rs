@@ -2,8 +2,8 @@ use std::ops;
 
 #[derive(Clone, Copy, Debug)]
 pub struct Vec3 {
-    pub y: f64,
     pub x: f64,
+    pub y: f64,
     pub z: f64,
 }
 
@@ -36,9 +36,9 @@ impl ops::Mul for Vec3 {
 
     fn mul(self, rhs: Self) -> Self::Output {
         Self {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-            z: self.z - rhs.z,
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
+            z: self.z * rhs.z,
         }
     }
 }
@@ -85,10 +85,16 @@ impl Vec3 {
     }
 
     pub fn dot(v1: Vec3, v2: Vec3) -> f64 {
-        v1.x * v2.x + v1.y * v2.y + v1.z + v2.z
+        // println!(
+        //     "{:?} {:?} {}",
+        //     v1,
+        //     v2,
+        //     v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+        // );
+        v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
     }
 
-    pub fn cross(&mut self, v: Vec3) -> Vec3 {
+    pub fn cross(&self, v: Vec3) -> Vec3 {
         Vec3 {
             x: self.y * v.z - self.z * v.y,
             y: self.z * v.x - self.x * v.z,
@@ -96,16 +102,16 @@ impl Vec3 {
         }
     }
 
-    pub fn normalize(mut v: Vec3) -> Vec3 {
+    pub fn normalize(v: Vec3) -> Vec3 {
         let len = v.lenght();
         v / len
     }
 
-    pub fn lenght_squared(&mut self) -> f64 {
+    pub fn lenght_squared(&self) -> f64 {
         self.x * self.x + self.y * self.y + self.z * self.z
     }
 
-    pub fn lenght(&mut self) -> f64 {
+    pub fn lenght(&self) -> f64 {
         self.lenght_squared().sqrt()
     }
 }
