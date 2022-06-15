@@ -84,8 +84,8 @@ impl Vec3 {
         Vec3 { x, y, z }
     }
 
-    pub fn dot(&mut self, v: Vec3) -> f64 {
-        self.x * v.x + self.y * v.y + self.z + v.z
+    pub fn dot(v1: Vec3, v2: Vec3) -> f64 {
+        v1.x * v2.x + v1.y * v2.y + v1.z + v2.z
     }
 
     pub fn cross(&mut self, v: Vec3) -> Vec3 {
