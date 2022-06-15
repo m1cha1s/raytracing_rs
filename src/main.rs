@@ -1,21 +1,30 @@
 use raylib::prelude::*;
 use vec3::Vec3;
 
+mod hit;
 mod ray;
+mod sphere;
 mod vec3;
 
-fn hit_sphere(center: Vec3, radius: f64, r: ray::Ray) -> bool {
+fn hit_sphere(center: Vec3, radius: f64, r: ray::Ray) -> f64 {
     let oc = r.orig - center;
-    let a = Vec3::dot(r.dir, r.dir);
-    let b = 2. * Vec3::dot(oc, r.dir);
-    let c = Vec3::dot(oc, oc) - (radius * radius);
-    let discriminant = b * b - 4. * a * c;
-    discriminant > 0.
+    let a = r.dir.lenght_squared();
+    let half_b = Vec3::dot(oc, r.dir);
+    let c = oc.lenght_squared() - radius * radius;
+    let discriminant = half_b * half_b - a * c;
+
+    if discriminant < 0. {
+        -1.
+    } else {
+        (-half_b - discriminant.sqrt()) / a
+    }
 }
 
 fn ray_color(ray: ray::Ray) -> Vec3 {
-    if hit_sphere(Vec3::new(0., 0., -1.), 0.5, ray.clone()) {
-        return Vec3::new(1., 0., 0.);
+    let t = hit_sphere(Vec3::new(0., 0., -1.), 0.5, ray.clone());
+    if t > 0. {
+        let n = Vec3::normalize(ray.at(t) - Vec3::new(0., 0., -1.));
+        return Vec3::new(n.x + 1., n.y + 1., n.z + 1.) * 0.5;
     }
     let unit_direction = Vec3::normalize(ray.dir);
     let t = 0.5 * (unit_direction.y + 1.0);
@@ -26,7 +35,7 @@ fn main() {
     // Image
 
     let aspect_ratio: f64 = 16. / 9.;
-    let width: i32 = 400;
+    let width: i32 = 800;
     let height: i32 = (width as f64 / aspect_ratio) as i32;
 
     // Camera
